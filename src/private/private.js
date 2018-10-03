@@ -118,13 +118,11 @@ function sendTransaction(web3, tx, verbose=true) {
             id: 1
         }, (e, r) => {
             if (e) {
-                console.log("error:");
-                console.log(e);
+                utils.logError(e);
                 reject(e);
             }
             else if (r.error !== undefined) {
-                console.log("error");
-                console.log(r.error);
+                utils.logError(r.error);
                 reject(r.error);
             }
             else {
