@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 const path = require('path');
-const ss = require(path.join(__dirname, '../src/secretstore.js'));
+const ss = require(path.join(__dirname, '../src/secretstore'));
 const sha256 = require('crypto-js/sha256');
 
 const assets = require("./assets.js");
@@ -33,7 +33,7 @@ describe('Secret store correct inputs test', async () => {
     it('should generate server key', async () => {
         docID = sha256(Math.random().toString()).toString();
         signedDocID = await ss.signRawHash(web3, alice, alicepwd, docID);
-        skey = await ss.generateServerKey(httpSSAlice, docID, signedDocID, 1);
+        skey = await ss.session.generateServerKey(httpSSAlice, docID, signedDocID, 1);
         assert.exists(skey);
         assert.isNotEmpty(skey);
     });
@@ -45,26 +45,26 @@ describe('Secret store correct inputs test', async () => {
     });
 
     it('should store the document key', async () => {
-        var res = await ss.storeDocumentKey(httpSSAlice, docID, signedDocID, dkey.common_point, dkey.encrypted_point);
+        var res = await ss.session.storeDocumentKey(httpSSAlice, docID, signedDocID, dkey.common_point, dkey.encrypted_point);
         assert.exists(res);
     });
 
     it('should generate server and document key', async () => {
         docID = sha256(Math.random().toString()).toString();
         signedDocID = await ss.signRawHash(web3, alice, alicepwd, docID);
-        dkey = await ss.generateServerAndDocumentKey(httpSSAlice, docID, signedDocID, 1);
+        dkey = await ss.session.generateServerAndDocumentKey(httpSSAlice, docID, signedDocID, 1);
         assert.exists(dkey);
         assert.isNotEmpty(dkey);
     });
 
     it('should shadow retrieve document key', async () => {
-        shadowRetrievedKey = await ss.shadowRetrieveDocumentKey(httpSSAlice, docID, signedDocID);
+        shadowRetrievedKey = await ss.session.shadowRetrieveDocumentKey(httpSSAlice, docID, signedDocID);
         assert.exists(shadowRetrievedKey);
         assert.isNotEmpty(shadowRetrievedKey);
     });
 
     it('should retrieve document key', async () => {
-        retrievedKey = await ss.retrieveDocumentKey(httpSSAlice, docID, signedDocID);
+        retrievedKey = await ss.session.retrieveDocumentKey(httpSSAlice, docID, signedDocID);
         assert.exists(retrievedKey);
         assert.isNotEmpty(retrievedKey);
     });
@@ -99,14 +99,14 @@ describe('Secret store correct inputs test', async () => {
 
     it('should schnorr sign a message', async () => {
         let message = sha256("bongocat").toString();
-        let signedMessage = await ss.signSchnorr(httpSSAlice, docID, signedDocID, message);
+        let signedMessage = await ss.session.signSchnorr(httpSSAlice, docID, signedDocID, message);
         assert.exists(signedMessage);
         assert.isNotEmpty(signedMessage);
     });
 
     it('should ecdsa sign a message', async () => {
         let message = sha256("bongocat").toString();
-        let signedMessage = await ss.signEcdsa(httpSSAlice, docID, signedDocID, message);
+        let signedMessage = await ss.session.signEcdsa(httpSSAlice, docID, signedDocID, message);
         assert.exists(signedMessage);
         assert.isNotEmpty(signedMessage);
     });
@@ -125,7 +125,7 @@ describe('Secret store correct inputs test', async () => {
         let signatureOldSet = await ss.signRawHash(web3, alice, alicepwd, hashOldSet);
         let signatureNewSet = await ss.signRawHash(web3, alice, alicepwd, hashNewSet);
         
-        let something = await ss.nodesSetChange(httpSSAlice, 
+        let something = await ss.session.nodesSetChange(httpSSAlice, 
                                     nodeIDsNewSet, 
                                     signatureOldSet, 
                                     signatureNewSet);
@@ -142,7 +142,7 @@ describe('Secret store correct inputs test', async () => {
         let signatureOldSet = await ss.signRawHash(web3, alice, alicepwd, hashOldSet);
         let signatureNewSet = await ss.signRawHash(web3, alice, alicepwd, hashNewSet);
         
-        let something = await ss.nodesSetChange(httpSSAlice, 
+        let something = await ss.session.nodesSetChange(httpSSAlice, 
                                     nodeIDsNewSet, 
                                     signatureOldSet, 
                                     signatureNewSet);
@@ -150,6 +150,4 @@ describe('Secret store correct inputs test', async () => {
         assert.exists(theHash);
         assert.isNotEmpty(theHash);
     });
-
-
 });

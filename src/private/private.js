@@ -1,6 +1,6 @@
 "use strict";
 
-const utils = require("./utils.js");
+const utils = require("../utils.js");
 
 /**
  * Composes a regular public transaction with the missing fields filled in. Delegates to `parity_composeTransaction` RPC API call.
@@ -128,7 +128,6 @@ function sendTransaction(web3, tx, verbose=true) {
                 reject(r.error);
             }
             else {
-                //console.log(r);
                 resolve(r.result);
             }
         });
@@ -159,7 +158,6 @@ function contractKey(web3, address, verbose=true) {
                 reject(r.error);
             }
             else {
-                //console.log(r);
                 resolve(r.result);
             }
         });

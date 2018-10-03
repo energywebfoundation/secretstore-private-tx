@@ -11,7 +11,7 @@ const TestContract = assets.TestContract;
 
 var web3 = new (require('web3'))(httpRpcAlice);
 
-const ptx = require(path.join(__dirname, '../src/privatetx.js'));
+const private = require(path.join(__dirname, '../src/private'));
 
 describe('Private transactions correct inputs test', async () => {
     
@@ -21,7 +21,7 @@ describe('Private transactions correct inputs test', async () => {
     var contractAddress;
 
     it('should compose a regular public tx', async () => {
-        publicTx = await ptx.composePublicTx(web3, {gas: web3.utils.toHex(1000000),
+        publicTx = await private.composePublicTx(web3, {gas: web3.utils.toHex(1000000),
             gasPrice: web3.utils.toHex(1000), from: alice, to: null, data: TestContract.bytecode});
         assert.exists(publicTx);
         assert.isNotEmpty(publicTx);
@@ -29,7 +29,7 @@ describe('Private transactions correct inputs test', async () => {
 
     it('should compose a private deployment tx', async () => {
         signedTx = await web3.eth.personal.signTransaction(publicTx, alicepwd);
-        composure = await ptx.composeDeploymentTx(web3, signedTx.raw, [bob], web3.utils.toHex(1000));
+        composure = await private.composeDeploymentTx(web3, signedTx.raw, [bob], web3.utils.toHex(1000));
         assert.exists(composure.receipt);
         assert.isNotEmpty(composure.receipt);
         assert.exists(composure.transaction);
@@ -48,7 +48,7 @@ describe('Private transactions correct inputs test', async () => {
         privateContract = new web3.eth.Contract(TestContract.abi, contractAddress);
         let encodedData = privateContract.methods.x().encodeABI();
         let nonce = web3.utils.toHex((await web3.eth.getTransactionCount(alice)));
-        state = await ptx.call(web3, {from:alice, to:contractAddress, data:encodedData, nonce: nonce});
+        state = await private.call(web3, {from:alice, to:contractAddress, data:encodedData, nonce: nonce});
         assert.exists(state);
         assert.isNotEmpty(state);
     });
@@ -56,17 +56,17 @@ describe('Private transactions correct inputs test', async () => {
     it('should modify private state', async () => {
         let setXData = await privateContract.methods.setX(web3.utils.toHex("42")).encodeABI();
         let nonce = web3.utils.toHex((await web3.eth.getTransactionCount(alice)));
-        publicTx = await ptx.composePublicTx(web3, {gas: web3.utils.toHex(1000000),
+        publicTx = await private.composePublicTx(web3, {gas: web3.utils.toHex(1000000),
             gasPrice: web3.utils.toHex(1000), from: alice, to: contractAddress, data: setXData});
         
         signedTx = await web3.eth.personal.signTransaction(publicTx, alicepwd);
-        let receipt = await ptx.sendTransaction(web3, signedTx.raw);
+        let receipt = await private.sendTransaction(web3, signedTx.raw);
         assert.exists(receipt);
         assert.isNotEmpty(receipt);
     });
 
     it('should return contract key', async () => {
-        let retval = await ptx.contractKey(web3, contractAddress);
+        let retval = await private.contractKey(web3, contractAddress);
         assert.exists(retval);
         assert.isNotEmpty(retval);
     });

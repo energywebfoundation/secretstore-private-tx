@@ -1,49 +1,14 @@
 "use strict";
 
-const path = require('path');
-const utils = require(path.join(__dirname, "./utils.js"));
+const utils = require("../utils.js");
 
-class SSRequestError extends Error {
+class SecretStoreSessionError extends Error {
     constructor(message, response) {
         super(message);
         this.response = response;
-        this.name = "SSRequestError";
+        this.name = "SecretStoreSessionError";
     }
 };
-
-/**
- * 
- * Computes recoverrable ECDSA signatures which are used in the Secret Store: signatures of server key id and signatures of nodes set hash
- * 
- * @param {Object} web3 The web3 instance
- * @param {String} account Account of SS user
- * @param {String} pwd Password of SS user
- * @param {String} hash The 256-bit hash to be signed (server key id or nodes set hash)
- * @param {Boolean} verbose Whether to console log errors
- * @returns {Promise<String>} The signed hash
- */
-function signRawHash(web3, account, pwd, hash, verbose=true) {
-    return new Promise((resolve, reject) => {
-        web3.currentProvider.send({
-            jsonrpc: '2.0',
-            method: 'secretstore_signRawHash',
-            params: [account, pwd, utils.add0x(hash)],
-            id: 1
-        }, (e, r) => {
-            if (e) {
-                if (verbose) utils.logError(e);
-                reject(e);
-            }
-            else if (r.error !== undefined) {
-                if (verbose) utils.logError(r.error);
-                reject(r.error);
-            }
-            else {
-                resolve(r.result);
-            }
-        });
-    });
-}
 
 /**
  * Generates server keys.
@@ -72,7 +37,7 @@ function generateServerKey(url, serverKeyID, signedServerKeyID, threshold, verbo
             }
             else if (response.statusCode != 200) {
                 if (verbose) utils.logFailedResponse(response, body, options);
-                var sserror = new SSRequestError("Request failed.", response);
+                var sserror = new SecretStoreSessionError("Request failed.", response);
                 reject(sserror);
             }
             else {
@@ -112,7 +77,7 @@ function generateServerAndDocumentKey(url, serverKeyID, signedServerKeyID, thres
             }
             else if (response.statusCode != 200) {
                 if (verbose) utils.logFailedResponse(response, body, options);
-                var sserror = new SSRequestError("Request failed.", response);
+                var sserror = new SecretStoreSessionError("Request failed.", response);
                 reject(sserror);
             }
             else {
@@ -147,7 +112,7 @@ function shadowRetrieveDocumentKey(url, serverKeyID, signedServerKeyID, verbose=
             }
             else if (response.statusCode != 200) {
                 if (verbose) utils.logFailedResponse(response, body, options);
-                var sserror = new SSRequestError("Request failed.", response);
+                var sserror = new SecretStoreSessionError("Request failed.", response);
                 reject(sserror);
             }
             else {
@@ -185,7 +150,7 @@ function retrieveDocumentKey(url, serverKeyID, signedServerKeyID, verbose=true) 
             }
             else if (response.statusCode != 200) {
                 if (verbose) utils.logFailedResponse(response, body, options);
-                var sserror = new SSRequestError("Request failed.", response);
+                var sserror = new SecretStoreSessionError("Request failed.", response);
                 reject(sserror);
             }
             else {
@@ -221,7 +186,7 @@ function signSchnorr(url, serverKeyID, signedServerKeyID, messageHash, verbose=t
             }
             else if (response.statusCode != 200) {
                 if (verbose) utils.logFailedResponse(response, body, options);
-                var sserror = new SSRequestError("Request failed.", response);
+                var sserror = new SecretStoreSessionError("Request failed.", response);
                 reject(sserror);
             }
             else {
@@ -257,7 +222,7 @@ function signEcdsa(url, serverKeyID, signedServerKeyID, messageHash, verbose=tru
             }
             else if (response.statusCode != 200) {
                 if (verbose) utils.logFailedResponse(response, body, options);
-                var sserror = new SSRequestError("Request failed.", response);
+                var sserror = new SecretStoreSessionError("Request failed.", response);
                 reject(sserror);
             }
             else {
@@ -267,142 +232,6 @@ function signEcdsa(url, serverKeyID, signedServerKeyID, messageHash, verbose=tru
     });
 }
 
-/**
- * Securely generates document key, so that it remains unknown to all key servers
- * 
- * @param {Object} web3 The web3 instance
- * @param {String} account Account of SS user
- * @param {String} pwd Password of SS user
- * @param {String} serverKey The server key, returned by a server key generating session
- * @param {Boolean} verbose Whether to console log errors
- * @return {Promise<String>} The document key
- */
-function generateDocumentKey(web3, account, pwd, serverKey, verbose=true) {
-    return new Promise((resolve, reject) => {
-        web3.currentProvider.send({
-            jsonrpc: '2.0',
-            method: 'secretstore_generateDocumentKey',
-            params: [account, pwd, serverKey],
-            id: 1
-        }, (e, r) => {
-            if (e) {
-                if (verbose) utils.logError(e);
-                reject(e);
-            }
-            else if (r.error !== undefined) {
-                if (verbose) utils.logError(r.error);
-                reject(r.error);
-            }
-            else {
-                resolve(r.result);
-            }
-        });
-    });
-}
-
-/**
- * You can use it to encrypt a small document. Can be used after running a document key retrieval session or a server- and document key generation session
- * 
- * @param {Object} web3 The web3 instance
- * @param {String} account Account of SS user
- * @param {String} pwd Password of SS user
- * @param {String} encryptedKey Document key encrypted with requester's public key
- * @param {String} hexDocument Hex encoded document data
- * @param {Boolean} verbose Whether to console log errors
- * @return {Promise<String>} The encrypted secret document
- */
-function encrypt(web3, account, pwd, encryptedKey, hexDocument, verbose=true) {
-    return new Promise((resolve, reject) => {
-        web3.currentProvider.send({
-            jsonrpc: '2.0',
-            method: 'secretstore_encrypt',
-            params: [account, pwd, encryptedKey, hexDocument],
-            id: 1
-        }, (e, r) => {
-            if (e) {
-                if (verbose) utils.logError(e);
-                reject(e);
-            }
-            else if (r.error !== undefined) {
-                if (verbose) utils.logError(r.error);
-                reject(r.error);
-            }
-            else {
-                resolve(r.result);
-            }
-        });
-    });
-}
-
-/**
- * This method can be used to decrypt document, encrypted by `encrypt` method before
- * 
- * @param {Object} web3 The web3 instance
- * @param {String} account Account of SS user
- * @param {String} pwd Password of SS user
- * @param {String} encryptedKey Document key encrypted with requester's public key
- * @param {String} encryptedDocument Encrypted document data, returned by "encrypt"
- * @param {Boolean} verbose Whether to console log errors
- * @return {Promise<String>} The decrypted secret document
- */
-function decrypt(web3, account, pwd, encryptedKey, encryptedDocument, verbose=true) {
-    return new Promise((resolve, reject) => {
-        web3.currentProvider.send({
-            jsonrpc: '2.0',
-            method: 'secretstore_decrypt',
-            params: [account, pwd, encryptedKey, encryptedDocument],
-            id: 1
-        }, (e, r) => {
-            if (e) {
-                if (verbose) utils.logError(e);
-                reject(e);
-            }
-            else if (r.error !== undefined) {
-                if (verbose) utils.logError(r.error);
-                reject(r.error);
-            }
-            else {
-                resolve(r.result);
-            }
-        });
-    });
-}
-
-/**
- * This method can be used to decrypt document, encrypted by `encrypt` method before
- * 
- * @param {Object} web3 The web3 instance
- * @param {String} account Account of SS user
- * @param {String} pwd Password of SS user
- * @param {String} decryptedSecret Field from `document key shadow retrieval session` result
- * @param {String} commonPoint Field from `document key shadow retrieval session` result
- * @param {String} decryptShadows Field from `document key shadow retrieval session` result
- * @param {String} encryptedDocument Encrypted document data, returned by `encrypt`
- * @param {Boolean} verbose Whether to console log errors
- * @return {Promise<String>} The decrypted secret document
- */
-function shadowDecrypt(web3, account, pwd, decryptedSecret, commonPoint, decryptShadows, encryptedDocument, verbose=true) {
-    return new Promise((resolve, reject) => {
-        web3.currentProvider.send({
-            jsonrpc: '2.0',
-            method: 'secretstore_shadowDecrypt',
-            params: [account, pwd, decryptedSecret, commonPoint, decryptShadows, encryptedDocument],
-            id: 1
-        }, (e, r) => {
-            if (e) {
-                if (verbose) utils.logError(e);
-                reject(e);
-            }
-            else if (r.error !== undefined) {
-                if (verbose) utils.logError(r.error);
-                reject(r.error);
-            }
-            else {
-                resolve(r.result);
-            }
-        });
-    });
-}
 
 /**
  * Binds an externally-generated document key to a server key. Useable after a `server key generation` session.
@@ -434,7 +263,7 @@ function storeDocumentKey(url, serverKeyID, signedServerKeyID, commonPoint, encr
             }
             else if (response.statusCode != 200) {
                 if (verbose) utils.logFailedResponse(response, body, options);
-                var sserror = new SSRequestError("Request failed.", response);
+                var sserror = new SecretStoreSessionError("Request failed.", response);
                 reject(sserror);
             }
             else {
@@ -444,37 +273,6 @@ function storeDocumentKey(url, serverKeyID, signedServerKeyID, commonPoint, encr
     });
 }
 
-/**
- * 
- * Computes the hash of nodes ids, required to compute nodes set signature for manual `nodes set change` session
- * 
- * @param {Object} web3 The web3 instance
- * @param {Array<String>} nodeIDs node IDs of the "new set"
- * @param {Boolean} verbose Whether to console log errors
- * @returns {Promise<String>} The hash
- */
-function serversSetHash(web3, nodeIDs, verbose=true) {
-    return new Promise((resolve, reject) => {
-        web3.currentProvider.send({
-            jsonrpc: '2.0',
-            method: 'secretstore_serversSetHash',
-            params: [nodeIDs],
-            id: 1
-        }, (e, r) => {
-            if (e) {
-                if (verbose) utils.logError(e);
-                reject(e);
-            }
-            else if (r.error !== undefined) {
-                if (verbose) utils.logError(r.error);
-                reject(r.error);
-            }
-            else {
-                resolve(r.result);
-            }
-        });
-    });
-}
 
 /**
  * Nodes set change session. Requires all added, removed and stable nodes to be online for the duration of the session. 
@@ -516,7 +314,7 @@ function nodesSetChange(url, nodeIDsNewSet, signatureOldSet, signatureNewSet, ve
             }
             else if (response.statusCode != 200) {
                 if (verbose) utils.logFailedResponse(response, body, options);
-                var sserror = new SSRequestError("Request failed.", response);
+                var sserror = new SecretStoreSessionError("Request failed.", response);
                 reject(sserror);
             }
             else {
@@ -526,21 +324,14 @@ function nodesSetChange(url, nodeIDsNewSet, signatureOldSet, signatureNewSet, ve
     });
 }
 
-
 module.exports = {
-    SSRequestError,
-    signRawHash,
+    SecretStoreSessionError,
     generateServerKey,
-    generateDocumentKey,
     generateServerAndDocumentKey,
     storeDocumentKey,
     retrieveDocumentKey,
     shadowRetrieveDocumentKey,
-    encrypt,
-    decrypt,
-    shadowDecrypt,
     signSchnorr,
     signEcdsa,
-    serversSetHash,
-    nodesSetChange
+    nodesSetChange,
 }
