@@ -1,5 +1,5 @@
 # secretstore-private-js
-Node package for Parity's Secret Store and Private Transaction API calls and sessions.
+[Node package](https://www.npmjs.com/package/secretstore-private-js) for Parity's Secret Store and Private Transaction API calls and sessions.
 Originally made for the [Energy Web Foundation](http://energyweb.org/).
 
 ## Why
