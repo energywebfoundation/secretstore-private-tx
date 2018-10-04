@@ -14,6 +14,10 @@ The abstraction of..
 
  - Parity's [private module](https://wiki.parity.io/JSONRPC-secretstore-module)
 
+## Basic documentation
+
+https://ngyam.github.io/secretstore-private-js/
+
 ## Can I see examples?
 Yes, you can find doing the Parity tutorials with this package [in my other repo](https://github.com/ngyam/tutorial-secretstore-privatetx)
 

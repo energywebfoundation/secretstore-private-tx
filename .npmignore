@@ -67,4 +67,11 @@ parity
 nodes_ss_dev/
 
 # doc
-doc/
+docs/
+jsdoc/
+
+# contracts
+contracts/
+
+# tests
+test/
