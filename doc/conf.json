@@ -1,0 +1,26 @@
+{   
+    "recurseDepth": 10,
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "source": {
+        "include": "./src/",
+        "exclude": "./src/utils.js"
+    },
+    "plugins": [],
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "default": {
+            "outputSourceFiles": true
+        }
+    },
+    "opts": {
+        "template": "templates/default",
+        "encoding": "utf8",
+        "destination": "./doc/src/",
+        "recurse": true,
+        "package": "./package.json"
+    }
+
+}

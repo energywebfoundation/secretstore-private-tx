@@ -1,8 +1,20 @@
+/** @module secretstore/session */
 "use strict";
 
 const utils = require("../utils.js");
 
+/**
+ * Error class, thrown upon a failed SS session http request.
+ * 
+ * @memberof module:secretstore/session
+ * @class
+ */
 class SecretStoreSessionError extends Error {
+    /**
+     * @constructor
+     * @param {String} message The error message 
+     * @param {Object} response The response object
+     */
     constructor(message, response) {
         super(message);
         this.response = response;
@@ -13,6 +25,7 @@ class SecretStoreSessionError extends Error {
 /**
  * Generates server keys.
  * 
+ * @memberof module:secretstore/session
  * @param {String} url URL where the SS node is listening for incoming requests
  * @param {String} serverKeyID The server key ID
  * @param {String} signedServerKeyID The server key ID signed by SS user
@@ -51,8 +64,9 @@ function generateServerKey(url, serverKeyID, signedServerKeyID, threshold, verbo
  * Generating document key by one of the participating nodes. 
  * While it is possible (and more secure, if you’re not trusting the Secret Store nodes) 
  * to run separate server key generation and document key storing sessions, 
- * you can generate both keys simultaneously
+ * you can generate both keys simultaneously.
  * 
+ * @memberof module:secretstore/session
  * @param {String} url URL where the SS node is listening for incoming requests
  * @param {String} serverKeyID The server key ID
  * @param {String} signedServerKeyID The server key ID signed by SS user
@@ -88,8 +102,9 @@ function generateServerAndDocumentKey(url, serverKeyID, signedServerKeyID, thres
 }
 
 /**
- * This session is a preferable way of retrieving previously generated document key
+ * This session is a preferable way of retrieving previously generated document key.
  * 
+ * @memberof module:secretstore/session
  * @param {String} url URL where the SS node is listening for incoming requests
  * @param {String} serverKeyID The server key ID
  * @param {String} signedServerKeyID The server key ID signed by SS user
@@ -123,11 +138,12 @@ function shadowRetrieveDocumentKey(url, serverKeyID, signedServerKeyID, verbose=
 }
 
 /**
- * Run the lighter version of the `document key shadow retrieval` session, 
+ * The lighter version of the `document key shadow retrieval` session, 
  * which returns final document key (though, encrypted with requester public key) if you have enough trust in Secret Store nodes. 
  * During document key shadow retrieval session, document key is not reconstructed on any node. 
  * But it requires Secret Store client either to have an access to Parity RPCs, or to run some EC calculations to decrypt the document key.
  * 
+ * @memberof module:secretstore/session
  * @param {String} url URL where the SS node is listening for incoming requests
  * @param {String} serverKeyID The server key ID
  * @param {String} signedServerKeyID The server key ID signed by SS user
@@ -161,8 +177,9 @@ function retrieveDocumentKey(url, serverKeyID, signedServerKeyID, verbose=true) 
 }
 
 /**
- * Schnorr signing session, for computing Schnorr signature of a given message hash
+ * Schnorr signing session, for computing Schnorr signature of a given message hash.
  * 
+ * @memberof module:secretstore/session
  * @param {String} url URL where the SS node is listening for incoming requests
  * @param {String} serverKeyID The server key ID
  * @param {String} signedServerKeyID The server key ID signed by SS user
@@ -197,8 +214,9 @@ function signSchnorr(url, serverKeyID, signedServerKeyID, messageHash, verbose=t
 }
 
 /**
- * ECDSA signing session, for computing ECDSA signature of a given message hash
+ * ECDSA signing session, for computing ECDSA signature of a given message hash.
  * 
+ * @memberof module:secretstore/session
  * @param {String} url URL where the SS node is listening for incoming requests
  * @param {String} serverKeyID The server key ID
  * @param {String} signedServerKeyID The server key ID signed by SS user
@@ -236,6 +254,7 @@ function signEcdsa(url, serverKeyID, signedServerKeyID, messageHash, verbose=tru
 /**
  * Binds an externally-generated document key to a server key. Useable after a `server key generation` session.
  * 
+ * @memberof module:secretstore/session
  * @param {String} url URL where the SS node is listening for incoming requests
  * @param {String} serverKeyID Same ID that was used in `server key generation session`
  * @param {String} signedServerKeyID Same server key id, signed by the same entity (author) that has signed the server key id in the `server key generation session`
@@ -278,8 +297,9 @@ function storeDocumentKey(url, serverKeyID, signedServerKeyID, commonPoint, encr
  * Nodes set change session. Requires all added, removed and stable nodes to be online for the duration of the session. 
  * Before starting the session, you’ll need to generate two administrator’s signatures: 
  * `old set` signature and `new set` signature. To generate these signatures, 
- * the Secret Store RPC methods should be used: `serversSetHash` and `signRawHash`
+ * the Secret Store RPC methods should be used: `serversSetHash` and `signRawHash`.
  * 
+ * @memberof module:secretstore/session
  * @param {String} url URL where the SS node is listening for incoming requests
  * @param {String} nodeIDsNewSet node IDs of the `new set`
  * @param {String} signatureOldSet ECDSA signature of all online nodes IDs `keccak(ordered_list(staying + added + removing))`

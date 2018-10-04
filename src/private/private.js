@@ -1,11 +1,17 @@
+/**
+ * @module private
+ */
+
 "use strict";
 
 const utils = require("../utils.js");
 
 /**
- * Composes a regular public transaction with the missing fields filled in. Delegates to `parity_composeTransaction` RPC API call.
- * This method is not part of the official Parity `private API`, just here for convenience.
+ * Composes a regular public transaction with the missing fields filled in. Delegates to 
+ * {@link https://wiki.parity.io/JSONRPC-parity-module#parity_composetransaction `parity_composeTransaction`} RPC API call.
+ * This method is not part of the official {@link https://wiki.parity.io/JSONRPC-private-module `Parity private API`}, just here for convenience.
  * 
+ * @memberof module:private
  * @param {Object} web3 The web3 instance
  * @param {Object} tx The transaction object, which can be partially incomplete
  * @returns {Promise<Object>} The complete transaction object, missing fields filled in by defaults
@@ -35,8 +41,10 @@ function composePublicTx(web3, tx, verbose=true) {
 
 /**
  * Crafts a specific transaction wrapping a private contract inside a public contract. 
- * The resulting transaction is later expected to be signed and broadcasted.
+ * The resulting transaction is later expected to be signed and broadcasted. The "to-be-deployed" 
+ * contract's address can be found in the return value.
  * 
+ * @memberof module:private
  * @param {Object} web3 The web3 instance
  * @param {String} rawData The raw transaction data
  * @param {Array<String>} validators List of private validators
@@ -72,6 +80,7 @@ function composeDeploymentTx(web3, rawData, validators, gasPrice="0x0", verbose=
  * to decrypt the private contract’s state. This call happens off-chain and no transaction 
  * gets broadcasted.
  * 
+ * @memberof module:private
  * @param {Object} web3 The web3 instance
  * @param {Object} tx The transaction object
  * @param {Boolean} verbose Whether to console log errors
@@ -102,12 +111,13 @@ function call(web3, tx, verbose=true) {
 
 /**
  * Broadcast a previously signed transaction to the validators for them to 
- * read it and validate the state change of a private contract.
+ * read, and to validate the state change of a private contract.
  * 
+ * @memberof module:private
  * @param {Object} web3 The web3 instance
  * @param {Object} tx The transaction object
  * @param {Boolean} verbose Whether to console log errors
- * @returns {Promise<Object>} The contractAddress, status and the public transaction's hash
+ * @returns {Promise<Object>} The contract address, status and the public transaction's hash
  */
 function send(web3, tx, verbose=true) {
     return new Promise((resolve, reject) => {
@@ -133,10 +143,12 @@ function send(web3, tx, verbose=true) {
 }
 
 /**
+ * Returns document key ID associated with the deployed public contract.
  * 
+ * @memberof module:private
  * @param {Object} web3 The web3 instance
  * @param {String} address Address of the private contract
- * @param {Object} verbose Whether to console log errors
+ * @param {Boolean} verbose Whether to console log errors
  * @returns {Promise<String>} Document key ID associated with the deployed public contract
  */
 function contractKey(web3, address, verbose=true) {

@@ -12,13 +12,15 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "crypto-js": "^3.1.9-1",
+    "jsdoc": "^3.5.5",
     "mocha": "^5.2.0"
   },
   "scripts": {
     "test": "mocha",
     "start": "cd nodes_ss_dev && ./start.sh",
     "stop": "cd nodes_ss_dev && ./stop.sh",
-    "clear": "cd nodes_ss_dev && ./clear.sh"
+    "clear": "cd nodes_ss_dev && ./clear.sh",
+    "doc": "./node_modules/.bin/jsdoc -c ./doc/conf.json"
   },
   "repository": {
     "type": "git",

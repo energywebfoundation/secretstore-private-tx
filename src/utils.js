@@ -1,3 +1,8 @@
+/**
+ * @module utils
+ * @ignore
+ */
+
 "use strict";
 
 /**
@@ -27,10 +32,23 @@ function add0x(str) {
     return str;
 }
 
+/**
+ * Removes enclosing double quotes from a string
+ * 
+ * @param {String} str The string
+ * @returns {String} The string without enclosing double quotes
+ */
 function removeEnclosingDQuotes(str) {
     return str.replace(/^"(.*)"$/, '$1');
 }
 
+/**
+ * Logs relevant information from a failed http response.
+ * 
+ * @param {Object} response The response object
+ * @param {Object} body The body of the response
+ * @param {Object} options Options object of the request
+ */
 function logFailedResponse(response, body, options) {
     console.log("Request failed");
     console.log("StatusCode: " + response.statusCode);
@@ -39,6 +57,11 @@ function logFailedResponse(response, body, options) {
     console.log("Request options: " + JSON.stringify(options));
 }
 
+/**
+ * Logs the error object.
+ * 
+ * @param {Error} e Error object
+ */
 function logError(e) {
     console.log("Error:");
     console.log(e);

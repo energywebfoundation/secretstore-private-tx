@@ -1,11 +1,15 @@
+/** @module secretstore */
+
 "use strict";
 
 const utils = require("../utils.js");
 
 /**
  * 
- * Computes recoverrable ECDSA signatures which are used in the Secret Store: signatures of server key id and signatures of nodes set hash
+ * Computes recoverable ECDSA signatures which are used in the Secret Store: 
+ * signatures of server key id and signatures of nodes set hash.
  * 
+ * @memberof module:secretstore
  * @param {Object} web3 The web3 instance
  * @param {String} account Account of SS user
  * @param {String} pwd Password of SS user
@@ -37,8 +41,9 @@ function signRawHash(web3, account, pwd, hash, verbose=true) {
 }
 
 /**
- * Securely generates document key, so that it remains unknown to all key servers
+ * Securely generates document key, so that it remains unknown to all key servers.
  * 
+ * @memberof module:secretstore
  * @param {Object} web3 The web3 instance
  * @param {String} account Account of SS user
  * @param {String} pwd Password of SS user
@@ -70,8 +75,11 @@ function generateDocumentKey(web3, account, pwd, serverKey, verbose=true) {
 }
 
 /**
- * You can use it to encrypt a small document. Can be used after running a document key retrieval session or a server- and document key generation session
+ * You can use it to encrypt a small document. 
+ * Can be used after running a document key retrieval session 
+ * or a server- and document key generation session.
  * 
+ * @memberof module:secretstore
  * @param {Object} web3 The web3 instance
  * @param {String} account Account of SS user
  * @param {String} pwd Password of SS user
@@ -104,8 +112,10 @@ function encrypt(web3, account, pwd, encryptedKey, hexDocument, verbose=true) {
 }
 
 /**
- * This method can be used to decrypt document, encrypted by `encrypt` method before
+ * This method can be used to decrypt document, 
+ * encrypted by `encrypt` method before.
  * 
+ * @memberof module:secretstore
  * @param {Object} web3 The web3 instance
  * @param {String} account Account of SS user
  * @param {String} pwd Password of SS user
@@ -138,8 +148,9 @@ function decrypt(web3, account, pwd, encryptedKey, encryptedDocument, verbose=tr
 }
 
 /**
- * This method can be used to decrypt document, encrypted by `encrypt` method before
+ * This method can be used to decrypt document, encrypted by `encrypt` method before.
  * 
+ * @memberof module:secretstore
  * @param {Object} web3 The web3 instance
  * @param {String} account Account of SS user
  * @param {String} pwd Password of SS user
@@ -175,8 +186,10 @@ function shadowDecrypt(web3, account, pwd, decryptedSecret, commonPoint, decrypt
 
 /**
  * 
- * Computes the hash of nodes ids, required to compute nodes set signature for manual `nodes set change` session
+ * Computes the hash of nodes ids, required to compute nodes set signature 
+ * for manual `nodes set change` session.
  * 
+ * @memberof module:secretstore
  * @param {Object} web3 The web3 instance
  * @param {Array<String>} nodeIDs node IDs of the "new set"
  * @param {Boolean} verbose Whether to console log errors
