@@ -3,7 +3,7 @@
 Originally made for the [Energy Web Foundation](http://energyweb.org/).
 
 ## Why
-To make your life simple when you want to work with these features.
+To make your life simple when you want to work with these new features which are not supported by web3.js (yet?).
 
 ## What can I find here
 The abstraction of..
