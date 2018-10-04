@@ -14,6 +14,13 @@ The abstraction of..
 
  - Parity's [private module](https://wiki.parity.io/JSONRPC-secretstore-module)
 
+## How to install
+Just simply do:
+```
+npm install secretstore-private-js
+```
+like any other node package.
+
 ## Basic documentation
 
 https://ngyam.github.io/secretstore-private-js/
