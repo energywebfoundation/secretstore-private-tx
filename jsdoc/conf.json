@@ -18,9 +18,8 @@
     "opts": {
         "template": "templates/default",
         "encoding": "utf8",
-        "destination": "./docs/src/",
+        "destination": "./jsdoc/src/",
         "recurse": true,
         "package": "./package.json"
     }
-
 }

@@ -20,7 +20,7 @@
     "start": "cd nodes_ss_dev && ./start.sh",
     "stop": "cd nodes_ss_dev && ./stop.sh",
     "clear": "cd nodes_ss_dev && ./clear.sh",
-    "doc": "./node_modules/.bin/jsdoc -c ./docs/conf.json"
+    "docs": "./jsdoc/docgen.sh"
   },
   "repository": {
     "type": "git",
