@@ -109,7 +109,7 @@ function call(web3, tx, verbose=true) {
  * @param {Boolean} verbose Whether to console log errors
  * @returns {Promise<Object>} The contractAddress, status and the public transaction's hash
  */
-function sendTransaction(web3, tx, verbose=true) {
+function send(web3, tx, verbose=true) {
     return new Promise((resolve, reject) => {
         web3.currentProvider.send({
             jsonrpc: '2.0',
@@ -118,11 +118,11 @@ function sendTransaction(web3, tx, verbose=true) {
             id: 1
         }, (e, r) => {
             if (e) {
-                utils.logError(e);
+                if (verbose) utils.logError(e);
                 reject(e);
             }
             else if (r.error !== undefined) {
-                utils.logError(r.error);
+                if (verbose) utils.logError(r.error);
                 reject(r.error);
             }
             else {
@@ -165,7 +165,7 @@ function contractKey(web3, address, verbose=true) {
 module.exports = {
     composePublicTx,
     composeDeploymentTx,
-    sendTransaction,
+    send,
     call,
     contractKey,
 }

@@ -60,7 +60,7 @@ describe('Private transactions correct inputs test', async () => {
             gasPrice: web3.utils.toHex(1000), from: alice, to: contractAddress, data: setXData});
         
         signedTx = await web3.eth.personal.signTransaction(publicTx, alicepwd);
-        let receipt = await private.sendTransaction(web3, signedTx.raw);
+        let receipt = await private.send(web3, signedTx.raw);
         assert.exists(receipt);
         assert.isNotEmpty(receipt);
     });
